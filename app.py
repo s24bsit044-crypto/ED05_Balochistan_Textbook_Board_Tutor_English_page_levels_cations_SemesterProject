@@ -144,6 +144,25 @@ st.markdown(
         border-color: #0284c7 !important;
         box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15) !important;
     }
+
+    /* Primary Get Answer Button Styling */
+    div[data-testid="stFormSubmitButton"] > button,
+    .primary-btn button {
+        background: linear-gradient(135deg, #0284c7 0%, #1e3a8a 100%) !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 12px !important;
+        padding: 0.68rem 1.4rem !important;
+        font-weight: 600 !important;
+        font-size: 1rem !important;
+        box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3) !important;
+        transition: all 0.2s ease !important;
+    }
+
+    div[data-testid="stFormSubmitButton"] > button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(2, 132, 199, 0.42) !important;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -246,7 +265,7 @@ with st.sidebar:
     st.markdown("### ⚙️ Answer & Filter Settings")
 
     answer_mode = st.radio(
-        "Select Answer Length",
+        "Default Answer Length",
         options=["Short Answer", "Detailed Answer", "Long Answer"],
         index=1,
         help="Choose between a quick summary, a complete textbook explanation, or a multi-source exam answer.",
@@ -316,40 +335,59 @@ with col3:
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# Quick Sample Prompts
+# Session State for Question & Auto-Submit on Sample Click
 if "selected_question" not in st.session_state:
     st.session_state.selected_question = ""
+if "submitted_question" not in st.session_state:
+    st.session_state.submitted_question = ""
 
-st.markdown("**Try a sample question:**")
+st.markdown("**Try a sample question (click to get instant answer):**")
 q_col1, q_col2, q_col3 = st.columns(3)
 if q_col1.button("⚡ Newton's Second Law of Motion", use_container_width=True):
     st.session_state.selected_question = "How does Newton's second law relate force and acceleration?"
+    st.session_state.submitted_question = st.session_state.selected_question
 if q_col2.button("🧪 Chemical Bonding & Valency", use_container_width=True):
     st.session_state.selected_question = "What is chemical bonding and how do atoms achieve stability?"
+    st.session_state.submitted_question = st.session_state.selected_question
 if q_col3.button("📖 Photosynthesis Process", use_container_width=True):
     st.session_state.selected_question = "Explain the process and importance of photosynthesis in plants."
+    st.session_state.submitted_question = st.session_state.selected_question
 
-# Main Search Input & Inline Mode Selector
-search_col, mode_col = st.columns([3, 1])
-with search_col:
-    question = st.text_input(
-        "Ask a curriculum question",
-        value=st.session_state.selected_question,
-        placeholder="Type your question from Balochistan Board textbooks...",
-    )
-with mode_col:
-    quick_mode = st.selectbox(
-        "Response Format",
-        options=["Short Answer", "Detailed Answer", "Long Answer"],
-        index=["Short Answer", "Detailed Answer", "Long Answer"].index(answer_mode),
-    )
+# Search Form with Clickable "Get Answer" Button
+with st.form(key="qa_search_form", clear_on_submit=False):
+    search_col, mode_col, btn_col = st.columns([3.2, 1.3, 1.1])
+    with search_col:
+        question_input = st.text_input(
+            "Ask a curriculum question",
+            value=st.session_state.selected_question,
+            placeholder="Type your question from Balochistan Board textbooks...",
+            label_visibility="collapsed",
+        )
+    with mode_col:
+        quick_mode = st.selectbox(
+            "Response Format",
+            options=["Short Answer", "Detailed Answer", "Long Answer"],
+            index=["Short Answer", "Detailed Answer", "Long Answer"].index(answer_mode),
+            label_visibility="collapsed",
+        )
+    with btn_col:
+        get_answer_clicked = st.form_submit_button("🔍 Get Answer", use_container_width=True)
 
-if question:
+if get_answer_clicked:
+    st.session_state.selected_question = question_input
+    st.session_state.submitted_question = question_input.strip()
+
+active_question = st.session_state.submitted_question
+
+if get_answer_clicked and not active_question:
+    st.warning("Please type a question first, then click **Get Answer**.")
+
+if active_question:
     subject_filter = None if selected_subject == "All Subjects" else selected_subject
     class_filter = None if selected_class == "All Classes" else selected_class
 
     results = retriever.search(
-        question,
+        active_question,
         limit=top_k,
         subject=subject_filter,
         class_level=class_filter,
