@@ -1,0 +1,10 @@
+{
+  "status": "corpus_validation_only",
+  "labeled_question_count": 0,
+  "recall_at_k": null,
+  "mrr": null,
+  "reason": "No human-reviewed textbook question/answer evaluation set exists; retrieval quality metrics are not fabricated.",
+  "passages": 6420,
+  "books_processed": 11,
+  "books_failed": 0
+}

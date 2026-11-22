@@ -1,0 +1,151 @@
+{
+  "seed": 42,
+  "dataset_kind": "OCR-derived passage corpus; no synthetic QA labels",
+  "source_book_count": 11,
+  "passage_count": 6420,
+  "train_passage_count": 5306,
+  "test_passage_count": 1114,
+  "train_percent": 82.65,
+  "test_percent": 17.35,
+  "split_grouping": "whole book_id groups; source documents do not cross splits",
+  "train_book_ids": [
+    "btbb_09_biology",
+    "btbb_09_chemistry",
+    "btbb_09_mathematics",
+    "btbb_10_chemistry",
+    "btbb_11_biology",
+    "btbb_11_chemistry",
+    "btbb_12_biology",
+    "btbb_12_chemistry",
+    "btbb_12_physics"
+  ],
+  "test_book_ids": [
+    "btbb_09_physics",
+    "btbb_11_physics"
+  ],
+  "books": [
+    {
+      "book_id": "btbb_09_biology",
+      "source_file": "data/2861-9th-class-biology-btbb-new-text-book-2026-pdf-(taleem360.com)-1HGGF.pdf",
+      "page_count": 172,
+      "pages_with_text": 172,
+      "pages_without_text": 0,
+      "ocr_characters": 252996,
+      "sha256": "9a8762c0075fcbcad09ee363116742a4290179e2de134957db485b47d693fca7",
+      "repeated_header_footer_lines_removed": 2,
+      "elapsed_seconds": 274.54
+    },
+    {
+      "book_id": "btbb_09_chemistry",
+      "source_file": "data/2862-9th-class-chemistry-btbb-new-text-book-2026-pdf-(taleem360.com)-LDOBC.pdf",
+      "page_count": 208,
+      "pages_with_text": 208,
+      "pages_without_text": 0,
+      "ocr_characters": 408193,
+      "sha256": "63969e934ff929a217d97f2fc14b8c98cbb6ab61d64126c2e449a490a48b6795",
+      "repeated_header_footer_lines_removed": 0,
+      "elapsed_seconds": 377.85
+    },
+    {
+      "book_id": "btbb_09_mathematics",
+      "source_file": "data/2879-9th-class-mathematics-btbb-new-text-book-2026-pdf-(taleem360.com)-dyC8o.pdf",
+      "page_count": 300,
+      "pages_with_text": 298,
+      "pages_without_text": 2,
+      "ocr_characters": 333234,
+      "sha256": "e7716fd01c201625250bec15273de56f635f67c3c2a95209cc0282d037da39e0",
+      "repeated_header_footer_lines_removed": 0,
+      "elapsed_seconds": 320.04
+    },
+    {
+      "book_id": "btbb_09_physics",
+      "source_file": "data/2881-9th-class-physics-btbb-new-text-book-2026-pdf-(taleem360.com)-VVoAa.pdf",
+      "page_count": 235,
+      "pages_with_text": 234,
+      "pages_without_text": 1,
+      "ocr_characters": 387933,
+      "sha256": "a69efbfd5c131d31e44c49cdcfc3208117e48b6fcdd1967403238b23f6f516e0",
+      "repeated_header_footer_lines_removed": 3,
+      "elapsed_seconds": 332.51
+    },
+    {
+      "book_id": "btbb_10_chemistry",
+      "source_file": "data/1383-10th-class-balochistan-board-chemistry-textbook-pdf-(taleem360.com)-YLls1.pdf",
+      "page_count": 190,
+      "pages_with_text": 190,
+      "pages_without_text": 0,
+      "ocr_characters": 230305,
+      "sha256": "e7fd5c425824fe54842046ef49ba23cc463e87babd625a367ac81f6c9821c14e",
+      "repeated_header_footer_lines_removed": 1,
+      "elapsed_seconds": 368.23
+    },
+    {
+      "book_id": "btbb_11_biology",
+      "source_file": "data/1717-balochistan-board-11th-class-biology-text-book-pdf-(taleem360.com)-KkKrF.pdf",
+      "page_count": 349,
+      "pages_with_text": 349,
+      "pages_without_text": 0,
+      "ocr_characters": 584477,
+      "sha256": "4113c177d0879c6a238da1d44220b7e1f5200d736e3d8cca023369be6052a0f4",
+      "repeated_header_footer_lines_removed": 0,
+      "elapsed_seconds": 723.44
+    },
+    {
+      "book_id": "btbb_11_chemistry",
+      "source_file": "data/641-11th-class-chemistry-text-book-in-pdf-by-balochistan-board-(taleem360.com)-ZVkUI.pdf",
+      "page_count": 472,
+      "pages_with_text": 469,
+      "pages_without_text": 3,
+      "ocr_characters": 687167,
+      "sha256": "a99db25aa6d3b5bff909729bc61e32379c47b1e6bb2e62ba300276d2ba3d5ad1",
+      "repeated_header_footer_lines_removed": 1,
+      "elapsed_seconds": 949.26
+    },
+    {
+      "book_id": "btbb_11_physics",
+      "source_file": "data/1720-balochistan-board-1st-year-physics-text-book-pdf-(taleem360.com)-VXzKd.pdf",
+      "page_count": 352,
+      "pages_with_text": 351,
+      "pages_without_text": 1,
+      "ocr_characters": 594886,
+      "sha256": "a0eab6808430143d0a6d92988f995f1318802230d9d2bba490a8b709427904ae",
+      "repeated_header_footer_lines_removed": 0,
+      "elapsed_seconds": 674.26
+    },
+    {
+      "book_id": "btbb_12_biology",
+      "source_file": "data/1718-balochistan-board-12th-class-biology-text-book-pdf-(taleem360.com)-AlNW8.pdf",
+      "page_count": 424,
+      "pages_with_text": 424,
+      "pages_without_text": 0,
+      "ocr_characters": 785761,
+      "sha256": "e934c0ad1efb3d133626e35faa7a12241fac6f98d07b01232105bccdbb2dd86e",
+      "repeated_header_footer_lines_removed": 0,
+      "elapsed_seconds": 978.07
+    },
+    {
+      "book_id": "btbb_12_chemistry",
+      "source_file": "data/642-12th-class-chemistry-text-book-in-pdf-by-balochistan-board-(taleem360.com)-lKQNJ.pdf",
+      "page_count": 404,
+      "pages_with_text": 404,
+      "pages_without_text": 0,
+      "ocr_characters": 634288,
+      "sha256": "cca4dc222a36c0dc7647ab0333b9ee38f58d9eae05ce7f917b8837b975cd8b6a",
+      "repeated_header_footer_lines_removed": 1,
+      "elapsed_seconds": 970.28
+    },
+    {
+      "book_id": "btbb_12_physics",
+      "source_file": "data/1719-12th-class-physics-text-book-by-balochistan-board-(taleem360.com)-bikhu.pdf",
+      "page_count": 373,
+      "pages_with_text": 373,
+      "pages_without_text": 0,
+      "ocr_characters": 633233,
+      "sha256": "4e418af2bc130c773f1d00bc5ef054282ed25540365e4a64a4911b86e3b9138a",
+      "repeated_header_footer_lines_removed": 0,
+      "elapsed_seconds": 757.72
+    }
+  ],
+  "failures": [],
+  "note": "This is a retrieval corpus, not model-training labels. Do not train a model on these passages as if they were supervised QA pairs."
+}
