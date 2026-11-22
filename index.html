@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ED-05 Textbook-Board RAG Tutor</title>
+    <style>
+         :root {
+            --bg: #f6f3ec;
+            --surface: #fffdf8;
+            --ink: #1d2421;
+            --muted: #5e6862;
+            --line: #ddd6c6;
+            --accent: #1f5c4a;
+            --accent-ink: #fff;
+            --warn-bg: #fbefd5;
+            --warn-ink: #6b4a05;
+            --err-bg: #f9e0dc;
+            --err-ink: #7a2118;
+            --ok-bg: #e1efe8;
+            color-scheme: light
+        }
+        
+        @media (prefers-color-scheme:dark) {
+             :root {
+                --bg: #141a17;
+                --surface: #1c2420;
+                --ink: #ece8dd;
+                --muted: #a3ada6;
+                --line: #2f3a34;
+                --accent: #6fc3a3;
+                --accent-ink: #0d1a14;
+                --warn-bg: #3a2f12;
+                --warn-ink: #f1d9a0;
+                --err-bg: #40201c;
+                --err-ink: #f3b9b0;
+                --ok-bg: #1f332a;
+                color-scheme: dark
+            }
+        }
+        
+        * {
+            box-sizing: border-box
+        }
+        
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font: 16px/1.6 Georgia, "Times New Roman", serif
+        }
+        
+        button,
+        select,
+        textarea,
+        input {
+            font: inherit;
+            color: inherit
+        }
+        
+        header {
+            border-bottom: 1px solid var(--line);
+            background: var(--surface)
+        }
+        
+        .wrap {
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 0 20px
+        }
+        
+        header .wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding-top: 16px;
+            padding-bottom: 16px;
+            flex-wrap: wrap
+        }
+        
+        h1 {
+            font-size: 1.25rem;
+            margin: 0;
+            letter-spacing: .01em
+        }
+        
+        .sub {
+            color: var(--muted);
+            font-size: .85rem;
+            font-family: system-ui, sans-serif
+        }
+        
+        .status {
+            font: .8rem system-ui, sans-serif;
+            padding: 4px 10px;
+            border-radius: 99px;
+            border: 1px solid var(--line);
+            color: var(--muted)
+        }
+        
+        .status.ok {
+            background: var(--ok-bg);
+            color: var(--accent);
+            border-color: transparent
+        }
+        
+        .status.bad {
+            background: var(--err-bg);
+            color: var(--err-ink);
+            border-color: transparent
+        }
+        
+        main {
+            padding: 24px 0 64px
+        }
+        
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 18px
+        }
+        
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px
+        }
+        
+        @media(max-width:640px) {
+            .filters {
+                grid-template-columns: 1fr
+            }
+        }
+        
+        label {
+            display: block;
+            font: .8rem system-ui, sans-serif;
+            color: var(--muted);
+            margin-bottom: 4px
+        }
+        
+        select,
+        textarea {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 10px
+        }
+        
+        select:focus,
+        textarea:focus,
+        button:focus-visible,
+        summary:focus-visible,
+        a:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 90px;
+            margin-top: 14px
+        }
+        
+        .row {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            align-items: center;
+            flex-wrap: wrap
+        }
+        
+        .btn {
+            border: 1px solid var(--line);
+            background: transparent;
+            border-radius: 8px;
+            padding: 10px 18px;
+            cursor: pointer;
+            font-family: system-ui, sans-serif
+        }
+        
+        .btn.primary {
+            background: var(--accent);
+            color: var(--accent-ink);
+            border-color: var(--accent);
+            font-weight: 600
+        }
+        
+        .btn:disabled {
+            opacity: .55;
+            cursor: not-allowed
+        }
+        
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 3px solid var(--line);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin .8s linear infinite;
+            display: none
+        }
+        
+        .loading .spinner {
+            display: inline-block
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+        
+        .turn {
+            margin-bottom: 22px
+        }
+        
+        .q {
+            font-weight: 700;
+            margin-bottom: 8px
+        }
+        
+        .answer {
+            white-space: pre-wrap
+        }
+        
+        .banner {
+            padding: 12px 14px;
+            border-radius: 8px;
+            font: .9rem system-ui, sans-serif;
+            margin: 10px 0
+        }
+        
+        .banner.warn {
+            background: var(--warn-bg);
+            color: var(--warn-ink)
+        }
+        
+        .banner.err {
+            background: var(--err-bg);
+            color: var(--err-ink)
+        }
+        
+        .meta {
+            font: .78rem system-ui, sans-serif;
+            color: var(--muted);
+            margin-top: 10px
+        }
+        
+        details {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            margin-top: 10px;
+            background: var(--bg)
+        }
+        
+        summary {
+            cursor: pointer;
+            padding: 10px 12px;
+            font: .9rem system-ui, sans-serif
+        }
+        
+        .cite {
+            padding: 0 14px 14px;
+            font: .9rem system-ui, sans-serif
+        }
+        
+        .cite dl {
+            display: grid;
+            grid-template-columns: 110px 1fr;
+            gap: 4px 10px;
+            margin: 0 0 10px
+        }
+        
+        .cite dt {
+            color: var(--muted)
+        }
+        
+        .cite dd {
+            margin: 0
+        }
+        
+        blockquote {
+            margin: 8px 0;
+            padding: 8px 12px;
+            border-left: 3px solid var(--accent);
+            font: .9rem/1.55 Georgia, serif;
+            white-space: pre-wrap
+        }
+        
+        .cite a {
+            color: var(--accent);
+            font-weight: 600
+        }
+        
+        .empty {
+            color: var(--muted);
+            text-align: center;
+            padding: 28px 10px;
+            font-family: system-ui, sans-serif
+        }
+        
+        footer {
+            color: var(--muted);
+            font: .78rem system-ui, sans-serif;
+            text-align: center;
+            padding-bottom: 30px
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="wrap">
+            <div>
+                <h1>ED-05 Textbook-Board RAG Tutor</h1>
+                <div class="sub">Answers from indexed textbooks with page-level citations and clear source labels</div>
+            </div>
+            <span id="status" class="status">Connecting…</span>
+        </div>
+    </header>
+
+    <main class="wrap">
+        <section class="panel" aria-label="Ask a question">
+            <div class="filters">
+                <div><label for="cls">Class</label><select id="cls"><option value="">All classes</option><option value="11">Class 11</option><option value="12">Class 12</option></select></div>
+                <div><label for="subj">Subject</label><select id="subj"><option value="">All subjects</option></select></div>
+                <div><label for="book">Textbook</label><select id="book"><option value="">All textbooks</option></select></div>
+            </div>
+            <textarea id="question" placeholder="Type your question about the textbook…" aria-label="Question"></textarea>
+            <div class="row">
+                <button id="ask" class="btn primary">Ask</button>
+                <button id="clear" class="btn">Clear conversation</button>
+                <span class="spinner" role="status" aria-label="Loading"></span>
+                <span class="sub" id="hint">Ctrl+Enter to send</span>
+            </div>
+        </section>
+        <div id="error" class="banner err" role="alert" hidden></div>
+        <section id="thread" aria-live="polite">
+            <div class="empty" id="empty">No questions yet. Answers appear here with the textbook pages that support them.</div>
+        </section>
+    </main>
+    <footer>Verify answers in the cited source. Supplemental OpenStax material is not a Balochistan Board textbook.</footer>
+
+    <script>
+        // Override with ?api=http://host:port when the backend runs elsewhere.
+        const localWebHost = ["localhost", "127.0.0.1"].includes(location.hostname);
+        const defaultAPI = (location.protocol === "http:" || location.protocol === "https:") &&
+            !(localWebHost && location.port && location.port !== "8000") ? location.origin : "http://127.0.0.1:8000";
+        const API = (new URLSearchParams(location.search).get("api") || defaultAPI).replace(/\/$/, "");
+        const $ = id => document.getElementById(id);
+        let books = [];
+        const INSUFFICIENT = "I could not find enough supporting information in the selected textbooks to answer this confidently.";
+
+        function el(tag, attrs = {}, ...kids) {
+            const n = document.createElement(tag);
+            for (const [k, v] of Object.entries(attrs)) {
+                if (k === "class") n.className = v;
+                else if (k === "text") n.textContent = v;
+                else n.setAttribute(k, v);
+            }
+            kids.forEach(c => n.append(c));
+            return n;
+        }
+
+        function showError(msg) {
+            const e = $("error");
+            e.textContent = msg;
+            e.hidden = !msg;
+        }
+
+        function setStatus(text, cls) {
+            const s = $("status");
+            s.textContent = text;
+            s.className = "status " + (cls || "");
+        }
+
+        async function api(path, opts) {
+            let res;
+            try {
+                res = await fetch(API + path, opts);
+            } catch {
+                if (location.protocol === "file:") {
+                    throw new Error("This page is open as a local file. Start the backend, then open http://127.0.0.1:8000/ in your browser.");
+                }
+                throw new Error("Cannot reach the backend. Start it with: uvicorn backend.main:app --port 8000");
+            }
+            if (!res.ok) {
+                let detail = "";
+                try {
+                    detail = (await res.json()).detail;
+                } catch {}
+                throw new Error(detail || ("The server returned an error (" + res.status + ")."));
+            }
+            return res.json();
+        }
+
+        function fillSelect(sel, items, allLabel) {
+            const keep = sel.value;
+            sel.replaceChildren(el("option", {
+                value: "",
+                text: allLabel
+            }));
+            items.forEach(([v, t]) => sel.append(el("option", {
+                value: v,
+                text: t
+            })));
+            if ([...sel.options].some(o => o.value === keep)) sel.value = keep;
+        }
+
+        function refreshFilters() {
+            const c = $("cls").value,
+                s = $("subj").value;
+            const byClass = books.filter(b => !c || String(b.class_level) === c);
+            fillSelect($("subj"), [...new Set(byClass.map(b => b.subject))].sort().map(x => [x, x]), "All subjects");
+            const s2 = $("subj").value;
+            const list = byClass.filter(b => !s2 || b.subject === s2);
+            fillSelect($("book"), list.map(b => [b.book_id, b.title]), "All textbooks");
+        }
+
+        async function init() {
+            try {
+                await api("/health");
+                books = await api("/textbooks");
+                fillSelect(
+                    $("cls"),
+                    [...new Set(books.map(b => String(b.class_level || "")).filter(Boolean))]
+                        .sort((a, b) => Number(a) - Number(b))
+                        .map(value => [value, "Class " + value]),
+                    "All classes"
+                );
+                setStatus(books.length ? books.length + " textbooks loaded" : "Connected, no textbooks indexed", books.length ? "ok" : "bad");
+                if (!books.length) showError("The backend has no indexed textbooks yet. Build the dataset and index first (see README).");
+                refreshFilters();
+            } catch (e) {
+                setStatus("Backend offline", "bad");
+                showError(e.message);
+            }
+        }
+
+        function citationNode(c, i) {
+            const rows = [
+                ["Book", c.book_title],
+                ["Class", c.class_level],
+                ["Subject", c.subject],
+                ["Chapter", c.chapter],
+                ["PDF page", c.pdf_page],
+                ["Printed page", c.printed_page],
+                ["Source ID", c.source_id]
+            ];
+            const dl = el("dl");
+            rows.forEach(([k, v]) => {
+                dl.append(el("dt", {
+                    text: k
+                }), el("dd", {
+                    text: v == null || v === "" ? "Not identified" : String(v)
+                }));
+            });
+            const body = el("div", {
+                class: "cite"
+            }, dl, el("blockquote", {
+                text: c.passage || ""
+            }));
+            if (c.pdf_page != null && c.book_id) {
+                body.append(el("a", {
+                    href: API + "/pdf/" + encodeURIComponent(c.book_id) + "#page=" + c.pdf_page,
+                    target: "_blank",
+                    rel: "noopener",
+                    text: "Open original PDF at page " + c.pdf_page
+                }));
+            }
+            const location = c.pdf_page != null ? "PDF page " + c.pdf_page : (c.chapter || "section");
+            const label = "Source " + (i + 1) + ": " + (c.book_title || c.book_id) + ", " + location;
+            return el("details", {}, el("summary", {
+                text: label
+            }), body);
+        }
+
+        function renderTurn(data) {
+            const t = el("article", {
+                class: "turn panel"
+            });
+            t.append(el("div", {
+                class: "q",
+                text: data.question
+            }));
+            if (data.status === "insufficient_evidence") {
+                t.append(el("div", {
+                    class: "banner warn",
+                    text: data.answer || INSUFFICIENT
+                }));
+            } else {
+                t.append(el("div", {
+                    class: "answer",
+                    text: data.answer
+                }));
+            }
+            if (data.warning) t.append(el("div", {
+                class: "banner warn",
+                text: data.warning
+            }));
+            const cites = data.citations || [];
+            if (cites.length) {
+                t.append(el("div", {
+                    class: "sub",
+                    text: "Sources (" + cites.length + ")"
+                }));
+                cites.forEach((c, i) => t.append(citationNode(c, i)));
+            }
+            const bits = [];
+            if (data.status) bits.push("Evidence: " + data.status.replace(/_/g, " "));
+            if (data.latency_ms != null) bits.push(Math.round(data.latency_ms) + " ms");
+            if (bits.length) t.append(el("div", {
+                class: "meta",
+                text: bits.join(" · ")
+            }));
+            $("empty")?.remove();
+            $("thread").prepend(t);
+        }
+
+        async function ask() {
+            const q = $("question").value.trim();
+            showError("");
+            if (!q) {
+                showError("Please type a question first.");
+                return;
+            }
+            const body = {
+                question: q,
+                class_level: $("cls").value || null,
+                subject: $("subj").value || null,
+                book_id: $("book").value || null
+            };
+            $("ask").disabled = true;
+            document.body.classList.add("loading");
+            try {
+                renderTurn(await api("/ask", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(body)
+                }));
+                $("question").value = "";
+            } catch (e) {
+                showError(e.message);
+            } finally {
+                $("ask").disabled = false;
+                document.body.classList.remove("loading");
+            }
+        }
+
+        $("ask").addEventListener("click", ask);
+        $("question").addEventListener("keydown", e => {
+            if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) ask();
+        });
+        $("clear").addEventListener("click", () => {
+            $("thread").replaceChildren(el("div", {
+                class: "empty",
+                id: "empty",
+                text: "No questions yet. Answers appear here with the textbook pages that support them."
+            }));
+            showError("");
+        });
+        $("cls").addEventListener("change", refreshFilters);
+        $("subj").addEventListener("change", refreshFilters);
+        init();
+    </script>
+</body>
+
+</html>

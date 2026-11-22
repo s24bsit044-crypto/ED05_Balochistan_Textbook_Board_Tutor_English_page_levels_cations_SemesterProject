@@ -1,0 +1,12 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Start ED-05 backend (restart on exit)",
+			"type": "shell",
+			"command": "while ($true) { & \".\\.venv\\Scripts\\python.exe\" -m uvicorn backend.main:app --host 127.0.0.1 --port 8000; Start-Sleep -Seconds 3 }",
+			"isBackground": true,
+			"problemMatcher": []
+		}
+	]
+}

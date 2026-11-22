@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.venv/
+data/raw_pdfs/
+data/download_report.json
+models/
+data/
+__pycache__/
+venv/
+.venv/
